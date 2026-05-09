@@ -10,17 +10,16 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <head>
+      <head />
+      <body suppressHydrationWarning>
+        {children}
+        <Analytics />
         <Script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1911010801005771"
           crossOrigin="anonymous"
           strategy="afterInteractive"
         />
-      </head>
-      <body suppressHydrationWarning>
-        {children}
-        <Analytics />
       </body>
     </html>
   );
