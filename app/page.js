@@ -32,8 +32,13 @@ export default function Page() {
   const [result, setResult] = useState(null);
   const [clinics, setClinics] = useState([]);
   const [locationText, setLocationText] = useState("📍 Use My Location");
+  const [mounted, setMounted] = useState(false);
   
   const cardRef = useRef(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // 3D Tilt Effect
   const handleMouseMove = (e) => {
@@ -122,7 +127,7 @@ export default function Page() {
         <div className="orb o3"></div>
         <div className="grid-overlay"></div>
         <div className="particles">
-          {Array.from({ length: 22 }).map((_, i) => (
+          {mounted && Array.from({ length: 22 }).map((_, i) => (
             <div key={i} className="pt" style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
