@@ -420,11 +420,6 @@ export default function Page() {
           </div>
         </div>
 
-        <div className="disclaimer">
-          ⚠️ MedRoute is for informational guidance only and is not a substitute for professional medical advice.<br/>
-          In an emergency, call <strong>108</strong> (India) immediately.
-        </div>
-
         {/* Ad Unit 3 */}
         <AdBanner 
           adSlot="3333333333" 
@@ -432,6 +427,57 @@ export default function Page() {
           fullWidthResponsive={true} 
           containerStyle={{ marginTop: '28px' }}
         />
+
+        {/* Informative Sections */}
+        <section className="info-sections">
+          <div className="info-card">
+            <h3>🚑 Emergency Warning Signs</h3>
+            <p>Seek immediate medical attention (ER) if you experience:</p>
+            <ul>
+              <li>Sudden chest pain or pressure</li>
+              <li>Difficulty breathing or severe shortness of breath</li>
+              <li>Sudden confusion, loss of vision, or slurred speech</li>
+              <li>Severe bleeding that won't stop</li>
+              <li>Sudden, severe pain, especially in the abdomen or head</li>
+            </ul>
+          </div>
+
+          <div className="info-card">
+            <h3>🩺 When to see a doctor</h3>
+            <p>You should schedule a consultation if:</p>
+            <ul>
+              <li>Symptoms persist for more than 3 days</li>
+              <li>Pain interferes with your daily activities</li>
+              <li>You have a high fever that doesn't break</li>
+              <li>You notice unusual lumps or skin changes</li>
+              <li>You have concerns about your mental health</li>
+            </ul>
+          </div>
+
+          <div className="info-card">
+            <h3>✦ How MedRoute Works</h3>
+            <p>MedRoute uses advanced AI (Google Gemini) to analyze your reported symptoms against medical datasets. It identifies patterns and matches you to the most relevant medical specialty to help you navigate the healthcare system more efficiently.</p>
+          </div>
+        </section>
+
+        <footer className="footer">
+          <div className="footer-content">
+            <div className="footer-logo">⊕ MedRoute</div>
+            <div className="footer-links">
+              <a href="#">About</a>
+              <a href="#">Privacy Policy</a>
+              <a href="#">Terms</a>
+              <a href="#">Contact</a>
+              <a href="#">Medical Disclaimer</a>
+            </div>
+            <p className="footer-disclaimer">
+              ⚠️ MedRoute is for informational guidance only and is not a substitute for professional medical advice, diagnosis, or treatment. 
+              Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition. 
+              In an emergency, call <strong>108</strong> (India) or your local emergency number immediately.
+            </p>
+            <p className="footer-copy">© {new Date().getFullYear()} MedRoute AI. Built for better triage.</p>
+          </div>
+        </footer>
       </div>
     </>
   );
@@ -461,7 +507,6 @@ function AdBanner({ adSlot, format, fullWidthResponsive, style, containerStyle }
         data-ad-format={format}
         data-full-width-responsive={fullWidthResponsive ? "true" : "false"}
       />
-      <div className="ad-placeholder">Ad loads here after AdSense approval</div>
     </div>
   );
 }

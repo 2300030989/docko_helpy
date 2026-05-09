@@ -397,13 +397,96 @@ body{
   border-bottom:.5px solid rgba(255,255,255,0.04);
 }
 .ad-unit ins{display:block!important}
-/* Fallback placeholder (shown when AdSense not yet approved) */
-.ad-placeholder{
-  min-height:90px;display:flex;align-items:center;justify-content:center;
-  font-size:12px;color:var(--dim);letter-spacing:.5px;
-  background:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(255,255,255,.01) 10px,rgba(255,255,255,.01) 20px);
+/* ── INFO SECTIONS ── */
+.info-sections{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  margin-top: 40px;
 }
-.ad-unit-rect .ad-placeholder{min-height:250px}
+.info-card{
+  background: var(--glass);
+  border: 0.5px solid var(--gb);
+  border-radius: 18px;
+  padding: 24px;
+  transition: transform 0.3s ease;
+}
+.info-card:hover{transform: translateY(-5px); border-color: rgba(0, 212, 255, 0.2)}
+.info-card h3{
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  margin-bottom: 12px;
+  color: var(--cyan);
+}
+.info-card p{
+  font-size: 13px;
+  color: var(--text);
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+.info-card ul{
+  list-style: none;
+  font-size: 13px;
+  color: var(--muted);
+}
+.info-card li{
+  position: relative;
+  padding-left: 18px;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+.info-card li::before{
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--cyan);
+  opacity: 0.7;
+}
+
+/* ── FOOTER ── */
+.footer{
+  margin-top: 80px;
+  padding: 40px 0;
+  border-top: 0.5px solid var(--gb);
+}
+.footer-content{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+}
+.footer-logo{
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  color: var(--text);
+  opacity: 0.8;
+}
+.footer-links{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+.footer-links a{
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 13px;
+  transition: color 0.2s;
+}
+.footer-links a:hover{color: var(--cyan)}
+.footer-disclaimer{
+  font-size: 11px;
+  color: var(--dim);
+  max-width: 600px;
+  line-height: 1.8;
+}
+.footer-copy{
+  font-size: 12px;
+  color: var(--dim);
+  margin-top: 10px;
+}
 
 /* ── RESPONSIVE ── */
 @media(max-width:600px){
