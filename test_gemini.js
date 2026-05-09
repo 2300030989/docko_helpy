@@ -1,5 +1,13 @@
+require("dotenv").config({ path: ".env.local" });
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const genAI = new GoogleGenerativeAI("AIzaSyBBuipmrlrsoOv7NYdmM88EVE27-WXpDl8");
+
+const apiKey = process.env.GEMINI_API_KEY;
+if (!apiKey) {
+  console.error("ERROR: GEMINI_API_KEY not found in .env.local");
+  process.exit(1);
+}
+
+const genAI = new GoogleGenerativeAI(apiKey);
 
 async function testModel(modelName) {
   try {
