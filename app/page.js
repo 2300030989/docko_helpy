@@ -96,7 +96,7 @@ export default function Page() {
 
     } catch (err) {
       console.error(err);
-      alert('Failed to analyze symptoms.');
+      alert(err.message || 'Failed to analyze symptoms.');
     }
 
     setTimeout(() => {
