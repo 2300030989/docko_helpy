@@ -38,7 +38,36 @@ export default function Page() {
 
   useEffect(() => {
     setMounted(true);
+    const saved = localStorage.getItem('medRouteState');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.selectedChips) setSelectedChips(parsed.selectedChips);
+        if (parsed.symInput) setSymInput(parsed.symInput);
+        if (parsed.result) {
+          setResult(parsed.result);
+          setShowResults(true);
+          setResultFlipped(true);
+        }
+        if (parsed.clinics && parsed.clinics.length > 0) setClinics(parsed.clinics);
+        if (parsed.locationText) setLocationText(parsed.locationText);
+      } catch (e) {
+        console.error('Failed to parse saved state', e);
+      }
+    }
   }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      localStorage.setItem('medRouteState', JSON.stringify({
+        selectedChips,
+        symInput,
+        result,
+        clinics,
+        locationText
+      }));
+    }
+  }, [selectedChips, symInput, result, clinics, locationText, mounted]);
 
   // 3D Tilt Effect
   const handleMouseMove = (e) => {
@@ -85,14 +114,13 @@ export default function Page() {
 
       setResult(data);
       
-      const updatedClinics = DEMO_CLINICS.map(c => {
-        const tags = [...c.tags];
-        if (!tags.includes(data.specialty) && !tags.some(t => t.includes('General') && !t.includes('Neurology'))) {
-          tags.unshift(data.specialty);
-        }
-        return { ...c, tags };
-      });
-      setClinics(updatedClinics);
+      const spec = data.specialty || 'General Physician';
+      const dynamicClinics = [
+        { name: `Top Rated ${spec} Clinic`, meta: 'Best rated nearby · View on Maps', tags: [spec, 'Top Rated'], rating: '★★★★★ 4.8' },
+        { name: `${spec} Specialists Center`, meta: 'Open now · View on Maps', tags: [spec, 'Specialist'], rating: '★★★★☆ 4.5' },
+        { name: `Nearest ${spec} Hospital`, meta: 'Emergency available · View on Maps', tags: [spec, 'Hospital'], rating: '★★★★☆ 4.2' },
+      ];
+      setClinics(dynamicClinics);
 
     } catch (err) {
       console.error(err);
@@ -249,6 +277,7 @@ export default function Page() {
 
               {result && (
                 <div className="face face-back">
+                  {/* Header */}
                   <div className="result-head">
                     <div className="res-icon">{result.icon || '🩺'}</div>
                     <div className="res-title-wrap">
@@ -259,15 +288,100 @@ export default function Page() {
                       </div>
                     </div>
                   </div>
-                  <p className="res-reason">{result.reason}</p>
-                  <div className="res-sub-label">Also consider</div>
-                  <div className="also-chips">
-                    {(result.also_consider || []).map((s, i) => (
-                      <span key={i} className="also-chip">{s}</span>
-                    ))}
+
+                  {/* Possible Conditions */}
+                  {result.possible_conditions && result.possible_conditions.length > 0 && (
+                    <div className="detail-section">
+                      <div className="res-sub-label">🔍 Possible Conditions</div>
+                      <div className="conditions-list">
+                        {result.possible_conditions.map((c, i) => (
+                          <div key={i} className={`condition-item ${i === 0 ? 'condition-primary' : ''}`}>
+                            <span className="condition-rank">{i === 0 ? 'Most Likely' : `#${i + 1}`}</span>
+                            <span className="condition-name">{c}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Detailed Reason */}
+                  <div className="detail-section">
+                    <div className="res-sub-label">🩺 Medical Assessment</div>
+                    <p className="res-reason">{result.reason}</p>
                   </div>
-                  <div className="res-sub-label">Self-care tip</div>
-                  <p className="res-reason" style={{ marginBottom: '10px' }}>{result.self_care}</p>
+
+                  {/* Also Consider */}
+                  <div className="detail-section">
+                    <div className="res-sub-label">👨‍⚕️ Also Consider Seeing</div>
+                    <div className="also-chips">
+                      {(result.also_consider || []).map((s, i) => (
+                        <span key={i} className="also-chip">{s}</span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Recommended Tests */}
+                  {result.recommended_tests && result.recommended_tests.length > 0 && (
+                    <div className="detail-section">
+                      <div className="res-sub-label">🧪 Recommended Tests</div>
+                      <div className="tests-list">
+                        {result.recommended_tests.map((t, i) => (
+                          <div key={i} className="test-item">
+                            <span className="test-dot">◆</span>
+                            <span>{t}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Two column: Self-care + Diet */}
+                  <div className="detail-two-col">
+                    <div className="detail-section">
+                      <div className="res-sub-label">💊 Self-Care Tips</div>
+                      <p className="res-reason">{result.self_care}</p>
+                    </div>
+                    {result.diet_tips && (
+                      <div className="detail-section">
+                        <div className="res-sub-label">🥗 Diet Advice</div>
+                        <p className="res-reason">{result.diet_tips}</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Medicines to Avoid */}
+                  {result.medicines_to_avoid && result.medicines_to_avoid.length > 0 && (
+                    <div className="detail-section">
+                      <div className="res-sub-label">🚫 Medicines to Avoid</div>
+                      <div className="avoid-list">
+                        {result.medicines_to_avoid.map((m, i) => (
+                          <div key={i} className="avoid-item">⛔ {m}</div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Recovery Timeline */}
+                  {result.recovery_timeline && (
+                    <div className="detail-section">
+                      <div className="res-sub-label">⏱️ Expected Recovery</div>
+                      <div className="timeline-box">{result.recovery_timeline}</div>
+                    </div>
+                  )}
+
+                  {/* Questions for Doctor */}
+                  {result.questions_for_doctor && result.questions_for_doctor.length > 0 && (
+                    <div className="detail-section">
+                      <div className="res-sub-label">❓ Ask Your Doctor</div>
+                      <div className="questions-list">
+                        {result.questions_for_doctor.map((q, i) => (
+                          <div key={i} className="question-item">"{q}"</div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Emergency Signs */}
                   <div className="warn-box">
                     <strong>⚠️ Go to ER if:</strong> {result.emergency_signs}
                   </div>
@@ -282,18 +396,26 @@ export default function Page() {
               <button className="loc-btn" onClick={getLocation}>{locationText}</button>
             </div>
             <div className="clinics-grid">
-              {clinics.map((c, i) => (
-                <div key={i} className="clinic-card">
-                  <div className="cl-name">{c.name}</div>
-                  <div className="cl-meta">{c.meta}</div>
-                  <div className="cl-tags">
-                    {c.tags.slice(0, 3).map((t, ti) => (
-                      <span key={ti} className="cl-tag">{t}</span>
-                    ))}
-                  </div>
-                  <div className="cl-rating">{c.rating}</div>
-                </div>
-              ))}
+              {clinics.map((c, i) => {
+                let locQuery = "me";
+                if (locationText.startsWith("📍") && locationText !== "📍 Use My Location" && locationText !== "📍 Location denied") {
+                  locQuery = locationText.replace("📍", "").trim();
+                }
+                const queryStr = `${result?.specialty || c.tags[0] || 'Hospital'} near ${locQuery}`;
+                const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryStr)}`;
+                return (
+                  <a key={i} href={mapUrl} target="_blank" rel="noopener noreferrer" className="clinic-card" style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
+                    <div className="cl-name">{c.name}</div>
+                    <div className="cl-meta">{c.meta}</div>
+                    <div className="cl-tags">
+                      {c.tags.slice(0, 3).map((t, ti) => (
+                        <span key={ti} className="cl-tag">{t}</span>
+                      ))}
+                    </div>
+                    <div className="cl-rating">{c.rating}</div>
+                  </a>
+                );
+              })}
             </div>
           </div>
         </div>
