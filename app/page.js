@@ -456,7 +456,7 @@ function AdBanner({ adSlot, format, fullWidthResponsive, style, containerStyle }
       <ins 
         className="adsbygoogle"
         style={style || { display: 'block' }}
-        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+        data-ad-client="ca-pub-1911010801005771"
         data-ad-slot={adSlot}
         data-ad-format={format}
         data-full-width-responsive={fullWidthResponsive ? "true" : "false"}
